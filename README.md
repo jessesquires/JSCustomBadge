@@ -1,3 +1,9 @@
+# Attention!
+
+**This project is no longer supported or actively developed.**
+
+---------------------------------
+
 # JSCustomBadge
 
 A simple, iOS badge UIView drawn with CoreGraphics.
