@@ -41,7 +41,8 @@
       withBadgeFrame:(BOOL)badgeFrameYesNo
  withBadgeFrameColor:(UIColor *)frameColor
            withScale:(CGFloat)scale
-         withShining:(BOOL)shining;
+         withShining:(BOOL)shining
+          withShadow:(BOOL)shadow;
 
 - (void)drawRoundedRectWithContext:(CGContextRef)context inRect:(CGRect)rect;
 - (void)drawShineWithContext:(CGContextRef)context inRect:(CGRect)rect;
@@ -54,6 +55,7 @@
 @implementation JSCustomBadge
 
 #pragma mark - Initialization
+
 - (id)initWithString:(NSString *)badgeString withScale:(CGFloat)scale withShining:(BOOL)shining
 {
 	self = [super initWithFrame:CGRectMake(0.0f, 0.0f, 25.0f, 25.0f)];
@@ -61,14 +63,15 @@
 	if(self) {
 		self.contentScaleFactor = [[UIScreen mainScreen] scale];
 		self.backgroundColor = [UIColor clearColor];
-		self.badgeText = badgeString;
-		self.badgeTextColor = [UIColor whiteColor];
-		self.badgeFrame = YES;
-		self.badgeFrameColor = [UIColor whiteColor];
-		self.badgeInsetColor = [UIColor redColor];
-		self.badgeCornerRoundness = 0.4f;
-		self.badgeScaleFactor = scale;
-		self.badgeShining = shining;
+		_badgeText = badgeString;
+		_badgeTextColor = [UIColor whiteColor];
+		_badgeFrame = NO;
+		_badgeFrameColor = nil;
+		_badgeInsetColor =  [UIColor colorWithRed:1.0f green:0.22f blue:0.22f alpha:1.0f]; // iOS 7 red
+		_badgeCornerRoundness = 0.4f;
+		_badgeScaleFactor = scale;
+		_badgeShining = shining;
+        _badgeShadow = NO;
 		[self autoBadgeSizeWithString:badgeString];		
 	}
     
@@ -82,30 +85,41 @@
  withBadgeFrameColor:(UIColor *)frameColor
            withScale:(CGFloat)scale
          withShining:(BOOL)shining
+          withShadow:(BOOL)shadow
 {
 	self = [super initWithFrame:CGRectMake(0.0f, 0.0f, 25.0f, 25.0f)];
     
 	if(self) {
 		self.contentScaleFactor = [[UIScreen mainScreen] scale];
 		self.backgroundColor = [UIColor clearColor];
-		self.badgeText = badgeString;
-		self.badgeTextColor = stringColor;
-		self.badgeFrame = badgeFrameYesNo;
-		self.badgeFrameColor = frameColor;
-		self.badgeInsetColor = insetColor;
-		self.badgeCornerRoundness = 0.4f;
-		self.badgeScaleFactor = scale;
-		self.badgeShining = shining;
+		_badgeText = badgeString;
+		_badgeTextColor = stringColor;
+		_badgeFrame = badgeFrameYesNo;
+		_badgeFrameColor = frameColor;
+		_badgeInsetColor = insetColor;
+		_badgeCornerRoundness = 0.4f;
+		_badgeScaleFactor = scale;
+		_badgeShining = shining;
+        _badgeShadow = shadow;
 		[self autoBadgeSizeWithString:badgeString];
 	}
     
 	return self;
 }
 
+- (void)dealloc
+{
+    _badgeText = nil;
+    _badgeTextColor = nil;
+    _badgeInsetColor = nil;
+    _badgeFrameColor = nil;
+}
+
 #pragma mark - Class initializers
+
 + (JSCustomBadge *) customBadgeWithString:(NSString *)badgeString
 {
-	return [[JSCustomBadge alloc] initWithString:badgeString withScale:1.0f withShining:YES];
+	return [[JSCustomBadge alloc] initWithString:badgeString withScale:1.0f withShining:NO];
 }
 
 + (JSCustomBadge *) customBadgeWithString:(NSString *)badgeString
@@ -115,6 +129,7 @@
                       withBadgeFrameColor:(UIColor *)frameColor
                                 withScale:(CGFloat)scale
                               withShining:(BOOL)shining
+                               withShadow:(BOOL)shadow
 {
 	return [[JSCustomBadge alloc] initWithString:badgeString
                                  withStringColor:stringColor
@@ -122,10 +137,12 @@
                                   withBadgeFrame:badgeFrameYesNo
                              withBadgeFrameColor:frameColor
                                        withScale:scale
-                                     withShining:shining];
+                                     withShining:shining
+                                      withShadow:shadow];
 }
 
 #pragma mark - Utilities
+
 - (void)autoBadgeSizeWithString:(NSString *)badgeString
 {
 	CGSize retValue;
@@ -136,19 +153,20 @@
     if([badgeString length] >= 2.0f) {
 		flexSpace = [badgeString length];
 		rectWidth = 25.0f + (stringSize.width + flexSpace); rectHeight = 25.0f;
-		retValue = CGSizeMake(rectWidth * self.badgeScaleFactor, rectHeight * self.badgeScaleFactor);
+		retValue = CGSizeMake(rectWidth * _badgeScaleFactor, rectHeight * _badgeScaleFactor);
 	}
     else {
-		retValue = CGSizeMake(25.0f * self.badgeScaleFactor, 25.0f * self.badgeScaleFactor);
+		retValue = CGSizeMake(25.0f * _badgeScaleFactor, 25.0f * _badgeScaleFactor);
 	}
 	
     self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, retValue.width, retValue.height);
-	self.badgeText = badgeString;
+	_badgeText = badgeString;
 	
     [self setNeedsDisplay];
 }
 
 #pragma mark - Drawing
+
 - (void)drawRect:(CGRect)rect
 {
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -196,12 +214,14 @@
 	CGContextAddArc(context, maxX-radius, maxY-radius, radius, 0.0f, M_PI/2.0f, 0.0f);
 	CGContextAddArc(context, minX+radius, maxY-radius, radius, M_PI/2.0f, M_PI, 0.0f);
 	CGContextAddArc(context, minX+radius, minY+radius, radius, M_PI, M_PI+M_PI/2.0f, 0.0f);
-    
-    CGContextSetShadowWithColor(context,
-                                CGSizeMake(0.0f, 1.0f),
-                                2.0f,
-                                [UIColor colorWithWhite:0.0f alpha:0.75f].CGColor);
-    
+
+    if(self.badgeShadow) {
+        CGContextSetShadowWithColor(context,
+                                    CGSizeMake(0.0f, 1.0f),
+                                    2.0f,
+                                    [UIColor colorWithWhite:0.0f alpha:0.75f].CGColor);
+    }
+
     CGContextFillPath(context);
 
 	CGContextRestoreGState(context);

@@ -40,6 +40,7 @@
 
 @property (assign, nonatomic) BOOL badgeFrame;
 @property (assign, nonatomic) BOOL badgeShining;
+@property (assign, nonatomic) BOOL badgeShadow;
 
 @property (assign, nonatomic) CGFloat badgeCornerRoundness;
 @property (assign, nonatomic) CGFloat badgeScaleFactor;
@@ -52,7 +53,8 @@
                           withBadgeFrame:(BOOL)badgeFrameYesNo
                      withBadgeFrameColor:(UIColor*)frameColor
                                withScale:(CGFloat)scale
-                             withShining:(BOOL)shining;
+                             withShining:(BOOL)shining
+                              withShadow:(BOOL)shadow;
 
 // Use to change the badge text after the first rendering
 - (void)autoBadgeSizeWithString:(NSString *)badgeString;

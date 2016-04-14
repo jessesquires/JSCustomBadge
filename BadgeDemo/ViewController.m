@@ -20,7 +20,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor colorWithWhite:0.85f alpha:1.0f];
     
-	JSCustomBadge *badge0 = [JSCustomBadge customBadgeWithString:@"66"];
+	JSCustomBadge *badge0 = [JSCustomBadge customBadgeWithString:@"666"];
     
 	JSCustomBadge *badge1 = [JSCustomBadge customBadgeWithString:@"JSCustomBadge"
                                                  withStringColor:[UIColor blackColor]
@@ -28,7 +28,8 @@
                                                   withBadgeFrame:YES
                                              withBadgeFrameColor:[UIColor yellowColor]
                                                        withScale:1.5
-                                                     withShining:YES];
+                                                     withShining:YES
+                                                      withShadow:YES];
 	
 	JSCustomBadge *badge2 = [JSCustomBadge customBadgeWithString:@"Retina Ready!"
                                                  withStringColor:[UIColor whiteColor]
@@ -36,15 +37,17 @@
                                                   withBadgeFrame:YES
                                              withBadgeFrameColor:[UIColor whiteColor]
                                                        withScale:1.5
-                                                     withShining:YES];
-    
+                                                     withShining:YES
+                                                      withShadow:YES];
+
 	JSCustomBadge *badge3 = [JSCustomBadge customBadgeWithString:@"...and scalable"
                                                  withStringColor:[UIColor whiteColor]
                                                   withInsetColor:[UIColor purpleColor]
                                                   withBadgeFrame:YES
                                              withBadgeFrameColor:[UIColor blackColor]
                                                        withScale:2.5
-                                                     withShining:YES];
+                                                     withShining:NO
+                                                      withShadow:NO];
     
 	JSCustomBadge *badge4 = [JSCustomBadge customBadgeWithString:@"...with Shining"
                                                  withStringColor:[UIColor blackColor]
@@ -52,7 +55,8 @@
                                                   withBadgeFrame:YES
                                              withBadgeFrameColor:[UIColor blackColor]
                                                        withScale:1.5
-                                                     withShining:YES];
+                                                     withShining:YES
+                                                      withShadow:YES];
     
 	JSCustomBadge *badge5 = [JSCustomBadge customBadgeWithString:@"Flat, no shining"
                                                  withStringColor:[UIColor whiteColor]
@@ -60,7 +64,8 @@
                                                   withBadgeFrame:YES
                                              withBadgeFrameColor:[UIColor blackColor]
                                                        withScale:1.5
-                                                     withShining:NO];
+                                                     withShining:NO
+                                                      withShadow:NO];
 
     JSCustomBadge *badge6 = [JSCustomBadge customBadgeWithString:@"Open & Free"
                                                  withStringColor:[UIColor whiteColor]
@@ -68,7 +73,8 @@
                                                   withBadgeFrame:YES
                                              withBadgeFrameColor:[UIColor yellowColor]
                                                        withScale:1.25
-                                                     withShining:YES];
+                                                     withShining:YES
+                                                      withShadow:YES];
     
     [badge1 autoBadgeSizeWithString:@"JSCustomBadge for iOS"];
     
