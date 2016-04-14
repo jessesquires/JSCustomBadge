@@ -1,6 +1,6 @@
-# Attention!
+# :warning: Attention! :warning:
 
-**This project is no longer supported or actively developed.**
+## This project is no longer supported or actively developed.
 
 ---------------------------------
 
