@@ -10,4 +10,6 @@ Pod::Spec.new do |s|
   s.source_files = 'JSCustomBadge'
   s.requires_arc = true
   s.framework = 'QuartzCore'
+
+  s.deprecated = true
 end
