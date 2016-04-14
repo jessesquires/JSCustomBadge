@@ -72,7 +72,9 @@
 		_badgeScaleFactor = scale;
 		_badgeShining = shining;
         _badgeShadow = NO;
-		[self autoBadgeSizeWithString:badgeString];		
+        _frameLineSize = 2.0f;
+        _badgeFont = [UIFont boldSystemFontOfSize:12.0f];
+		[self autoBadgeSizeWithString:badgeString];
 	}
     
 	return self;
@@ -101,6 +103,43 @@
 		_badgeScaleFactor = scale;
 		_badgeShining = shining;
         _badgeShadow = shadow;
+        _frameLineSize = 2.0f;
+        _badgeFont = [UIFont boldSystemFontOfSize:12.0f];
+		[self autoBadgeSizeWithString:badgeString];
+	}
+    
+	return self;
+}
+
+- (id)initWithString:(NSString *)badgeString
+     withStringColor:(UIColor *)stringColor
+      withInsetColor:(UIColor *)insetColor
+      withBadgeFrame:(BOOL)badgeFrameYesNo
+ withBadgeFrameColor:(UIColor *)frameColor
+           withScale:(CGFloat)scale
+         withShining:(BOOL)shining
+          withShadow:(BOOL)shadow
+        withLineSize:(CGFloat)size
+        withTextFont:(UIFont*)textFont
+
+{
+	self = [super initWithFrame:CGRectMake(0.0f, 0.0f, 25.0f, 25.0f)];
+    
+	if(self) {
+		self.contentScaleFactor = [[UIScreen mainScreen] scale];
+		self.backgroundColor = [UIColor clearColor];
+		_badgeText = badgeString;
+		_badgeTextColor = stringColor;
+		_badgeFrame = badgeFrameYesNo;
+		_badgeFrameColor = frameColor;
+		_badgeInsetColor = insetColor;
+		_badgeCornerRoundness = 0.4f;
+		_badgeScaleFactor = scale;
+		_badgeShining = shining;
+        _badgeShadow = shadow;
+        _badgeFont = textFont;
+        _frameLineSize = size;
+        _badgeFont = textFont;
 		[self autoBadgeSizeWithString:badgeString];
 	}
     
@@ -141,13 +180,36 @@
                                       withShadow:shadow];
 }
 
++ (JSCustomBadge *)customBadgeWithString:(NSString *)badgeString
+                         withStringColor:(UIColor*)stringColor
+                          withInsetColor:(UIColor*)insetColor
+                          withBadgeFrame:(BOOL)badgeFrameYesNo
+                     withBadgeFrameColor:(UIColor*)frameColor
+                               withScale:(CGFloat)scale
+                             withShining:(BOOL)shining
+                              withShadow:(BOOL)shadow
+                            withLineSize:(CGFloat)size
+                            withTextFont:(UIFont*)textFont
+{
+    return [[JSCustomBadge alloc] initWithString:badgeString
+                                 withStringColor:stringColor
+                                  withInsetColor:insetColor
+                                  withBadgeFrame:badgeFrameYesNo
+                             withBadgeFrameColor:frameColor
+                                       withScale:scale
+                                     withShining:shining
+                                      withShadow:shadow
+                                    withLineSize:size
+                                    withTextFont:textFont];
+}
+
 #pragma mark - Utilities
 
 - (void)autoBadgeSizeWithString:(NSString *)badgeString
 {
 	CGSize retValue;
 	CGFloat rectWidth, rectHeight;
-	CGSize stringSize = [badgeString sizeWithFont:[UIFont boldSystemFontOfSize:12.0f]];
+	CGSize stringSize = [badgeString sizeWithFont:self.badgeFont];
 	CGFloat flexSpace;
 	
     if([badgeString length] >= 2.0f) {
@@ -182,13 +244,13 @@
 	if([self.badgeText length] > 0.0f) {
         
 		[self.badgeTextColor set];
-		CGFloat sizeOfFont = 13.5f * self.badgeScaleFactor;
+		CGFloat sizeOfFont = (self.badgeFont.pointSize + 1.5f) * self.badgeScaleFactor;
 		
         if([self.badgeText length] < 2.0f) {
 			sizeOfFont += sizeOfFont * 0.2f;
 		}
         
-		UIFont *textFont = [UIFont boldSystemFontOfSize:sizeOfFont];
+		UIFont *textFont = [self.badgeFont fontWithSize:sizeOfFont];
 		CGSize textSize = [self.badgeText sizeWithFont:textFont];
 		
         [self.badgeText drawAtPoint:CGPointMake((rect.size.width/2.0f - textSize.width/2.0f),
@@ -278,13 +340,12 @@
 	CGFloat minY = CGRectGetMinY(rect) + puffer;
 	
     CGContextBeginPath(context);
-	CGFloat lineSize = 2.0f;
     
 	if(self.badgeScaleFactor > 1.0f) {
-		lineSize += self.badgeScaleFactor * 0.25f;
+		self.frameLineSize += self.badgeScaleFactor * 0.25f;
 	}
     
-	CGContextSetLineWidth(context, lineSize);
+	CGContextSetLineWidth(context, self.frameLineSize);
 	CGContextSetStrokeColorWithColor(context, [self.badgeFrameColor CGColor]);
 	CGContextAddArc(context, maxX-radius, minY+radius, radius, M_PI + (M_PI/2.0f), 0.0f, 0.0f);
 	CGContextAddArc(context, maxX-radius, maxY-radius, radius, 0.0f, M_PI/2.0f, 0.0f);
